@@ -13,44 +13,92 @@
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #fff;
+      color: #000;
     }
 
-    #map {
-      height: 80vh;
-      width: 100%;
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: linear-gradient(to right, #2a78bd, #a8cb3f);
     }
+
+    .navbar img {
+      height: 60px;
+    }
+
+    .navbar ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .navbar ul li {
+      display: inline;
+      margin-left: 20px;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: white;
+      transition: color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      color: #2a78bd;
+    }
+
+    .navbar ul {
+    list-style: none;
+   padding-left: 0;
+    width: 40%; /* Adjust this to bring the items closer or further from the middle */
+   margin-left: auto; /* This pushes the items to the right */
+  }
 
     .container {
-      max-width: 800px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
+      display: flex;
+      align-items: stretch;
     }
 
-    h1 {
-      text-align: center;
+    .sidebar {
+      flex: 1.5;
+      background-color: #2a78bd;
+      color: white;
+      padding: 20px;
+      box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+      margin-right: 20px;
+    }
+
+    .sidebar h1 {
       font-size: 36px;
-      color: #333; /* Dark grey */
-      margin-top: 0;
+      margin: 40px 0;
     }
 
-    p {
-      text-align: center;
+    .sidebar p {
       font-size: 20px;
-      color: #666; /* Medium grey */
     }
 
     .filter-container {
-      text-align: center;
       margin-bottom: 20px;
     }
 
+    .filter-container div {
+      margin-right: 20px;
+    }
+
     .filter-container label {
+      display: block;
       font-size: 20px;
       font-weight: bold;
-      margin-right: 10px;
+      margin-bottom: 5px;
     }
 
     .filter-container select {
+      width: 200px;
       font-size: 20px;
       padding: 5px 10px;
     }
@@ -61,24 +109,20 @@
       padding: 10px 20px;
       font-size: 20px;
       color: white;
-      background-color: #007BFF; /* Bootstrap primary button color */
+      background-color: #369c45;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, filter 0.3s ease;
     }
 
     .update-button:hover {
-      background-color: #0056b3; /* Darken the button color when hovered over */
+      filter: brightness(0.8);
     }
 
-    #companyName {
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      padding: 10px 0;
-      background-color: #f8f8f8;
-      border-bottom: 1px solid #ccc;
+    #map {
+      flex: 2.5;
+      height: 80vh;
       margin-bottom: 20px;
     }
 
@@ -163,12 +207,15 @@
       // Load data from the Google Sheet.
       function loadGoogleSheetData() {
         gapi.client.init({
-          'apiKey': 'AIzaSyDgfU-RxPYblpjaAkuDzI8-t5ks_ZjGuYo',
+          'apiKey': 'AIzaSyAXG8c6hgKa8CyYv5pZhuJBRfE-pjVsJvU',
           'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
         }).then(function() {
           gapi.client.sheets.spreadsheets.values.get({
-            spreadsheetId: '1w5ELtjJJ6T8HRIi5yeHhrsR4dAWVVx3xP0_mlDdu49w',
-            range: 'Sheet1!A2:F',
+            //spreadsheetId: '1pI-1J-DYg0g-N9oCMUGTpYZS8GOQ9w_waIvM6DeBs84',
+           //live 
+           spreadsheetId: '1Bo333LjONXkhVehZuQvH79wbAuei0yiLFtiUwORDzAk',
+
+            range: 'ONSITE 7 - 2023 Installer Regions!A2:Q',
           }).then(function(response) {
             var range = response.result;
             if (range.values.length > 0) {
@@ -176,9 +223,9 @@
               for (i = 0; i < totalRows; i++) {
                 var row = range.values[i];
                 var postcode = row[0];
-                var company = row[5];
-                var lat = parseFloat(row[3]);
-                var lng = parseFloat(row[4]);
+                var company = row[12];
+                var lat = parseFloat(row[14]);
+                var lng = parseFloat(row[15]);
 
                 // Skip this row if the company is undefined or empty.
                 if (company === undefined || company === '') {
@@ -340,25 +387,36 @@
     </script>
 </head>
 <body>
+  <nav class="navbar">
+    <img src="Leka-Logo-Horizontal-White-Text.svg" alt="Company Logo">
+    <ul>
+      <li><a href="https://docs.google.com/spreadsheets/d/1Bo333LjONXkhVehZuQvH79wbAuei0yiLFtiUwORDzAk/edit#gid=875939633">Spreadsheet</a></li>
+      <li><a href="#">About</a></li> 
+    </ul>
+  </nav>
   <div class="container">
-    <h1>Company Locations Map</h1>
-    <p id="instructions">Click on a pin to view the company name and postcode. Use the dropdowns to filter by company and area code.</p>
-    <div class="filter-container">
-      <label for="companyFilter">Select Company:</label>
-      <select id="companyFilter">
-        <option value="">All Companies</option>
-      </select>
+    <div class="sidebar">
+      <h1>Company Locations Map</h1>
+      <p id="instructions">Click on a pin to view the company name and postcode. Use the dropdowns to filter by company and area code.</p>
+      <div class="filter-container">
+        <div>
+          <label for="companyFilter">Select Company:</label>
+          <select id="companyFilter">
+            <option value="">All Companies</option>
+          </select>
+        </div>
+        <div>
+          <label for="areaCodeFilter">Select Area Code:</label>
+          <select id="areaCodeFilter">
+            <option value="">All Area Codes</option>
+          </select>
+        </div>
+      </div>
+      <button id="updateButton" class="update-button">Update</button>
+      
     </div>
-    <div class="filter-container">
-      <label for="areaCodeFilter">Select Area Code:</label>
-      <select id="areaCodeFilter">
-        <option value="">All Area Codes</option>
-      </select>
-    </div>
-    <button id="updateButton" class="update-button">Update</button>
-    <div id="companyName"></div>
     <div id="map"></div>
-    <div id="loading">Loading map...</div>
   </div>
+  <div id="loading">Loading map...</div>
 </body>
-</html> <!-- --> 
+</html>
